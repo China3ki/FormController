@@ -1,12 +1,14 @@
-﻿using FormController.Components.Forms;
+﻿using FormController.Components.Fields;
+using FormController.Components.Forms;
 using System.Diagnostics;
 
 namespace FormController
 {
     public class Form
     {
-        private FormView FormView = new();
-        private FormNavigation FormNavigation = new();
+        private FormView _formView = new();
+        private FormNavigation _formNavigation = new();
+        private List<Field> _fields = [];
         /// <summary>
         /// Adds a new field to the form with the specified description, type, and coordinates.
         /// </summary>
@@ -20,9 +22,10 @@ namespace FormController
         public void AddField(string fieldDescription, FieldType fieldType, int x, int y)
         {
             ValidateDescriptionOfField(fieldDescription);
-            FormView.FormMenu.Add(fieldDescription);
-            FormView.TypeOfField.Add(fieldType);
-            FormView.FieldsCoordinates.Add([x, y]);
+            _formView.FormMenu.Add(fieldDescription);
+            _formView.TypeOfField.Add(fieldType);
+            _formView.FieldsCoordinates.Add([x, y]);
+            CreateNewInstanceOfField(x, y, fieldDescription.Length, fieldType);
         }
         /// <summary>
         /// Adds a new field to the form with the specified description and type.
@@ -34,9 +37,11 @@ namespace FormController
         public void AddField(string fieldDescription, FieldType fieldType)
         {
             ValidateDescriptionOfField(fieldDescription);
-            FormView.FormMenu.Add(fieldDescription);
-            FormView.TypeOfField.Add(fieldType);
-            FormView.FieldsCoordinates.Add(GetNextCoordinates());
+            int[] getNextCoordinates = GetNextCoordinates();
+            _formView.FormMenu.Add(fieldDescription);
+            _formView.TypeOfField.Add(fieldType);
+            _formView.FieldsCoordinates.Add(getNextCoordinates);
+            CreateNewInstanceOfField(getNextCoordinates[0], getNextCoordinates[1], fieldDescription.Length, fieldType);
         }
         /// <summary>
         /// Adds a new field to the form with the specified description.
@@ -47,9 +52,11 @@ namespace FormController
         public void AddField(string fieldDescription)
         {
             ValidateDescriptionOfField(fieldDescription);
-            FormView.FormMenu.Add(fieldDescription);
-            FormView.TypeOfField.Add(FieldType.Text);
-            FormView.FieldsCoordinates.Add(GetNextCoordinates());
+            int[] getNextCoordinates = GetNextCoordinates();
+            _formView.FormMenu.Add(fieldDescription);
+            _formView.TypeOfField.Add(FieldType.Text);
+            _formView.FieldsCoordinates.Add(getNextCoordinates);
+            CreateNewInstanceOfField(getNextCoordinates[0], getNextCoordinates[1], fieldDescription.Length, FieldType.Text);
         }
         /// <summary>
         /// Adds a new field to the form view.
@@ -58,29 +65,57 @@ namespace FormController
         /// and calculates its coordinates based on the next available position.</remarks>
         public void AddField()
         {
-            FormView.FormMenu.Add($"Field {FormView.FormMenu.Count + 1}:");
-            FormView.TypeOfField.Add(FieldType.Text);
-            FormView.FieldsCoordinates.Add(GetNextCoordinates());
+            string fieldDescription = $"Field {_formView.FormMenu.Count + 1}:";
+            int[] getNextCoordinates = GetNextCoordinates();
+            _formView.FormMenu.Add(fieldDescription);
+            _formView.TypeOfField.Add(FieldType.Text);
+            _formView.FieldsCoordinates.Add(getNextCoordinates);
+            CreateNewInstanceOfField(getNextCoordinates[0], getNextCoordinates[1],fieldDescription.Length, FieldType.Text);
         }
+        /// <summary>
+        /// Initializes and prepares the form for user interaction.
+        /// </summary>
+        /// <remarks>This method sets up the form by rendering the menu, configuring maximum values,  and
+        /// starting the form's main execution process. It should be called before  interacting with the form to ensure
+        /// proper initialization.</remarks>
         public void InitForm()
         {
-            FormView.RenderFormMenu();
+            _formView.RenderFormMenu();
             SetMaxValues();
             RunForm();
         }
+        /// <summary>
+        /// Handles user input to navigate and interact with a form until the Enter key is pressed.
+        /// </summary>
+        /// <remarks>This method reads key inputs from the console and updates the form's navigation and
+        /// field appearance based on the user's actions. The navigation position is updated with each key press, and
+        /// the visual representation of the form is adjusted accordingly.</remarks>
         private void RunForm()
         {
             ConsoleKey key;
             do
             {
                 key = Console.ReadKey(true).Key;
-                FormNavigation.ChangePosition(key);
-                FormView.ChangeColorOfTheField(FormNavigation.PreviousPosition, FormNavigation.FieldPosition);
+                _formNavigation.ChangePosition(key);
+                _formView.ChangeColorOfTheField(_formNavigation.PreviousPosition, _formNavigation.FieldPosition);
             } while (key != ConsoleKey.Enter);
+            _fields[_formNavigation.FieldPosition].Write();
+        }
+        private void CreateNewInstanceOfField(int x, int y, int lengthOfDescription, FieldType fieldType)
+        {
+            switch(fieldType)
+            {
+                case FieldType.Text:
+                    _fields.Add(new Field(x, y, lengthOfDescription, false));
+                    break;
+                case FieldType.Password:
+                    _fields.Add(new Field(x, y, lengthOfDescription, true));
+                    break;
+            }
         }
         private void SetMaxValues()
         {
-            FormNavigation.MaxFieldPosition = FormView.FormMenu.Count;
+            _formNavigation.MaxFieldPosition = _formView.FormMenu.Count;
         }
         /// <summary>
         /// Validates the provided field description to ensure it meets required criteria.
@@ -103,11 +138,11 @@ namespace FormController
         {
             int previousPositionX;
             int previousPositionY;
-            int formCoordinatesLength = FormView.FieldsCoordinates.Count;
+            int formCoordinatesLength = _formView.FieldsCoordinates.Count;
             if (formCoordinatesLength != 0)
             {
-                previousPositionX = FormView.FieldsCoordinates[formCoordinatesLength - 1][0];
-                previousPositionY = FormView.FieldsCoordinates[formCoordinatesLength - 1][1] + 1;
+                previousPositionX = _formView.FieldsCoordinates[formCoordinatesLength - 1][0];
+                previousPositionY = _formView.FieldsCoordinates[formCoordinatesLength - 1][1] + 1;
             }
             else
             {
