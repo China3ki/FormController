@@ -1,10 +1,12 @@
-﻿using FormController.Components;
+﻿using FormController.Components.Forms;
+using System.Diagnostics;
 
 namespace FormController
 {
     public class Form
     {
         private FormView FormView = new();
+        private FormNavigation FormNavigation = new();
         /// <summary>
         /// Adds a new field to the form with the specified description, type, and coordinates.
         /// </summary>
@@ -34,7 +36,7 @@ namespace FormController
             ValidateDescriptionOfField(fieldDescription);
             FormView.FormMenu.Add(fieldDescription);
             FormView.TypeOfField.Add(fieldType);
-            FormView.FieldsCoordinates.Add(GetNextCordinates());
+            FormView.FieldsCoordinates.Add(GetNextCoordinates());
         }
         /// <summary>
         /// Adds a new field to the form with the specified description.
@@ -47,7 +49,7 @@ namespace FormController
             ValidateDescriptionOfField(fieldDescription);
             FormView.FormMenu.Add(fieldDescription);
             FormView.TypeOfField.Add(FieldType.Text);
-            FormView.FieldsCoordinates.Add(GetNextCordinates());
+            FormView.FieldsCoordinates.Add(GetNextCoordinates());
         }
         /// <summary>
         /// Adds a new field to the form view.
@@ -56,9 +58,29 @@ namespace FormController
         /// and calculates its coordinates based on the next available position.</remarks>
         public void AddField()
         {
-            FormView.FormMenu.Add($"Field {FormView.FormMenu.Count + 1}");
+            FormView.FormMenu.Add($"Field {FormView.FormMenu.Count + 1}:");
             FormView.TypeOfField.Add(FieldType.Text);
-            FormView.FieldsCoordinates.Add(GetNextCordinates());
+            FormView.FieldsCoordinates.Add(GetNextCoordinates());
+        }
+        public void InitForm()
+        {
+            FormView.RenderFormMenu();
+            SetMaxValues();
+            RunForm();
+        }
+        private void RunForm()
+        {
+            ConsoleKey key;
+            do
+            {
+                key = Console.ReadKey(true).Key;
+                FormNavigation.ChangePosition(key);
+                FormView.ChangeColorOfTheField(FormNavigation.PreviousPosition, FormNavigation.FieldPosition);
+            } while (key != ConsoleKey.Enter);
+        }
+        private void SetMaxValues()
+        {
+            FormNavigation.MaxFieldPosition = FormView.FormMenu.Count;
         }
         /// <summary>
         /// Validates the provided field description to ensure it meets required criteria.
@@ -77,15 +99,15 @@ namespace FormController
         /// is  empty, the method returns the default coordinates (0, 0).</remarks>
         /// <returns>An array of integers representing the next coordinates. The first element is the X-coordinate, and the
         /// second element is the Y-coordinate.</returns>
-        private int[] GetNextCordinates()
+        private int[] GetNextCoordinates()
         {
             int previousPositionX;
             int previousPositionY;
-            int formMenuLength = FormView.FormMenu.Count;
-            if (FormView.FormMenu.Count != 0)
+            int formCoordinatesLength = FormView.FieldsCoordinates.Count;
+            if (formCoordinatesLength != 0)
             {
-                previousPositionX = FormView.FieldsCoordinates[formMenuLength - 1][0];
-                previousPositionY = FormView.FieldsCoordinates[formMenuLength - 1][1] + 1;
+                previousPositionX = FormView.FieldsCoordinates[formCoordinatesLength - 1][0];
+                previousPositionY = FormView.FieldsCoordinates[formCoordinatesLength - 1][1] + 1;
             }
             else
             {
