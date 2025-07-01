@@ -2,6 +2,7 @@
 {
     Text,
     Password,
+    ShowPassword,
     Submit,
     Cancel
 }
