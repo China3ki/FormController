@@ -1,6 +1,6 @@
 ﻿namespace FormController.Components.Forms
 {
-    static class FormStyle
+    public static class FormStyle
     {
         /// <summary>
         /// Represents the font color used for the selected field in the console.
@@ -39,7 +39,7 @@
         /// <summary>
         /// Represents the font color used when submitting data.
         /// </summary>
-        static public ConsoleColor SubmitFontColor = ConsoleColor.White;
+        static public ConsoleColor SubmitFontColor = ConsoleColor.DarkGreen;
         /// <summary>
         /// Represents the background color used when submitting data.
         /// </summary>
@@ -59,14 +59,38 @@
         /// <summary>
         /// Represents the font color used to display cancel-related messages in the console.
         /// </summary>
-        static public ConsoleColor CancelFontColor = ConsoleColor.White;
+        static public ConsoleColor CancelFontColor = ConsoleColor.Red;
         /// <summary>
         /// Represents the background color used to indicate a canceled operation.
         /// </summary>
         /// <remarks>This static field can be used to customize the appearance of canceled operations in
         /// console-based applications. The default value is <see cref="ConsoleColor.Black"/>.</remarks>
         static public ConsoleColor CancelBackgroundColor = ConsoleColor.Black;
-        static public ConsoleColor SelectedCancelFontColor = ConsoleColor.Red;
+        /// <summary>
+        /// Represents the font color used to display the cancel option in the console.
+        /// </summary>
+        /// <remarks>The default value is <see cref="ConsoleColor.Red"/>. This color is intended to
+        /// visually distinguish  the cancel option from other text in the console.</remarks>
+        static public ConsoleColor SelectedCancelFontColor = ConsoleColor.Green;
+        /// <summary>
+        /// Represents the background color used for the cancel option when selected.
+        /// </summary>
         static public ConsoleColor SelectedCancelBackgroundColor = ConsoleColor.Black;
+        /// <summary>
+        /// Represents the font color used when displaying password show button.
+        /// </summary>
+        static public ConsoleColor ShowPasswordFontColor = ConsoleColor.Yellow;
+        /// <summary>
+        /// Represents the background color used when displaying password show button.
+        /// </summary>
+        static public ConsoleColor ShowPasswordBackgroundColor = ConsoleColor.Black;
+        /// <summary>
+        /// Represents the font color used when displaying seletected password show button.
+        /// </summary>
+        static public ConsoleColor SelectedShowPasswordFontColor = ConsoleColor.Green;
+        /// <summary>
+        /// Represents the background color used when displaying seletected password show button.
+        /// </summary>
+        static public ConsoleColor SelectedShowPasswordBackgroundColor = ConsoleColor.Black;
     }
 }

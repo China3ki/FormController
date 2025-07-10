@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace FormController
 {
-    public class Form
+    sealed public class Form
     {
         private FormView _formView = new();
         private FormNavigation _formNavigation = new();
@@ -86,6 +86,10 @@ namespace FormController
             if (field.FieldType == FieldType.Text || field.FieldType == FieldType.Password) return field.ReturnFieldValue();
             else throw new InvalidOperationException("That type of field does not have any data");
         }
+        public FieldType GetActionFromField()
+        {
+            return _formView.TypeOfField[_formNavigation.FieldPosition];
+        }
         /// <summary>
         /// Initializes and prepares the form for user interaction.
         /// </summary>
@@ -118,7 +122,8 @@ namespace FormController
             {
                 _fields[_formNavigation.FieldPosition].Write();
                 RunForm();
-            } else if (_formView.TypeOfField[position] == FieldType.ShowPassword)
+            }
+            else if (_formView.TypeOfField[position] == FieldType.ShowPassword)
             {
                 ShowPasswords();
                 RunForm();

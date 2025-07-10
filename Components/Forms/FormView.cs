@@ -92,7 +92,19 @@ namespace FormController.Components.Forms
                         Console.BackgroundColor = FormStyle.CancelBackgroundColor;
                     }
                     break;
-                default:
+                case FieldType.ShowPassword:
+                    if(selectedField)
+                    {
+                        Console.ForegroundColor = FormStyle.SelectedShowPasswordFontColor;
+                        Console.BackgroundColor = FormStyle.SelectedShowPasswordBackgroundColor;
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = FormStyle.ShowPasswordFontColor;
+                        Console.BackgroundColor = FormStyle.ShowPasswordBackgroundColor;
+                    }
+                    break;
+                        default:
                     if(selectedField)
                     {
                         Console.ForegroundColor = FormStyle.SelectedFieldFontColor;
